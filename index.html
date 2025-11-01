@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Шендерів для Minecraft з переглядом та натхненням</title>
+    <title>Генератор Шендерів для Minecraft</title>
     <style>
         :root {
             --primary-color: #4CAF50;
@@ -89,12 +89,78 @@
         }
         
         .preview-area {
-            background-color: #f9f9f9;
-            border: 1px dashed #ddd;
+            background-color: #1a1a1a;
+            border: 1px dashed #444;
             border-radius: 4px;
             padding: 1rem;
-            min-height: 200px;
+            min-height: 300px;
             margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .minecraft-preview {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .preview-sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to bottom, #7ec0ee, #b0e2ff);
+        }
+        
+        .preview-sun {
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 40px;
+            height: 40px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ffeb3b;
+        }
+        
+        .preview-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to bottom, #5d4037, #8d6e63);
+        }
+        
+        .preview-water {
+            position: absolute;
+            bottom: 25%;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background: rgba(33, 150, 243, 0.6);
+        }
+        
+        .preview-trees {
+            position: absolute;
+            bottom: 40%;
+            left: 20%;
+            width: 20px;
+            height: 60px;
+            background: #4caf50;
+        }
+        
+        .preview-trees::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: -15px;
+            width: 50px;
+            height: 50px;
+            background: #388e3c;
+            border-radius: 50%;
         }
         
         .code-block {
@@ -135,8 +201,8 @@
         
         .shader-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
         
         .shader-item {
@@ -156,6 +222,15 @@
         .shader-item h3 {
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+        }
+        
+        .shader-preview {
+            height: 120px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
         }
         
         .import-section {
@@ -192,6 +267,39 @@
             display: none;
         }
         
+        .inspiration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .inspiration-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .inspiration-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .inspiration-img {
+            width: 100%;
+            height: 150px;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .inspiration-content {
+            padding: 1rem;
+        }
+        
         footer {
             background-color: var(--dark-color);
             color: white;
@@ -200,176 +308,12 @@
             margin-top: 2rem;
         }
         
-        /* Новий стиль для галереї натхнення */
-        .inspiration-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .inspiration-item {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-        
-        .inspiration-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .inspiration-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
-        }
-        
-        .inspiration-content {
-            padding: 1rem;
-        }
-        
-        .inspiration-content h3 {
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-        
-        .inspiration-content p {
-            color: #666;
-            margin-bottom: 1rem;
-        }
-        
-        .inspiration-actions {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .inspiration-button {
-            background-color: var(--light-color);
-            color: var(--dark-color);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .inspiration-button:hover {
-            background-color: var(--accent-color);
-        }
-        
-        /* Стиль для 3D перегляду шейдерів */
-        .shader-preview-3d {
-            width: 100%;
-            height: 300px;
-            background: #1a1a1a;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-        
-        .shader-scene {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        
-        .shader-object {
-            position: absolute;
-            border-radius: 4px;
-            transition: all 0.5s ease;
-        }
-        
-        .shader-sky {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
-        }
-        
-        .shader-ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            background: linear-gradient(to top, #4CAF50, #8BC34A);
-        }
-        
-        .shader-sun {
-            position: absolute;
-            top: 20%;
-            right: 20%;
-            width: 50px;
-            height: 50px;
-            background: #FFEB3B;
-            border-radius: 50%;
-            box-shadow: 0 0 50px #FFEB3B;
-        }
-        
-        .shader-cube {
-            position: absolute;
-            bottom: 20%;
-            left: 20%;
-            width: 60px;
-            height: 60px;
-            background: #795548;
-            transform: rotate(45deg);
-        }
-        
-        .shader-water {
-            position: absolute;
-            bottom: 40%;
-            left: 0;
-            width: 100%;
-            height: 20%;
-            background: linear-gradient(to bottom, transparent, rgba(30, 136, 229, 0.7));
-            animation: water-wave 3s infinite linear;
-        }
-        
-        @keyframes water-wave {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .preview-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .preview-controls button {
-            flex: 1;
-        }
-        
-        /* Стиль для пошуку шейдерів */
-        .search-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .search-input {
-            flex: 1;
-        }
-        
-        .search-button {
-            width: auto;
-        }
-        
-        /* Адаптивність */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
             }
             
-            .shader-list, .inspiration-gallery {
+            .shader-list, .inspiration-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -385,15 +329,15 @@
 </head>
 <body>
     <header>
-        <h1>Генератор Шендерів для Minecraft з переглядом та натхненням</h1>
-        <p>Створюйте, переглядайте та надихайтесь шейдерами для вібрант візуал в Minecraft</p>
+        <h1>Генератор Шендерів для Minecraft</h1>
+        <p>Створюйте та експортуйте власні шейдери у форматі .mcpack</p>
     </header>
     
     <div class="container">
         <div class="tabs">
             <div class="tab active" data-tab="generator">Генератор шейдерів</div>
             <div class="tab" data-tab="library">Бібліотека шейдерів</div>
-            <div class="tab" data-tab="inspiration">Натхнення</div>
+            <div class="tab" data-tab="inspiration">Вдохновлення</div>
             <div class="tab" data-tab="import">Імпорт в Minecraft</div>
         </div>
         
@@ -403,7 +347,7 @@
                 
                 <div class="form-group">
                     <label for="shader-name">Назва шейдеру:</label>
-                    <input type="text" id="shader-name" placeholder="Введіть назву шейдеру">
+                    <input type="text" id="shader-name" placeholder="Введіть назву шейдеру" value="Мій кастомний шейдер">
                 </div>
                 
                 <div class="form-group">
@@ -430,35 +374,27 @@
                 
                 <div class="form-group">
                     <label for="shader-description">Опис шейдеру:</label>
-                    <textarea id="shader-description" rows="3" placeholder="Опишіть особливості вашого шейдеру"></textarea>
+                    <textarea id="shader-description" rows="3" placeholder="Опишіть особливості вашого шейдеру">Цей шейдер покращує візуальні ефекти в Minecraft</textarea>
                 </div>
                 
                 <button id="generate-shader">Згенерувати шейдер</button>
             </div>
             
             <div class="card">
-                <h2>Попередній перегляд та код шейдеру</h2>
-                
-                <div class="preview-controls">
-                    <button id="preview-day">Денний режим</button>
-                    <button id="preview-night">Нічний режим</button>
-                    <button id="preview-rain">Дощ</button>
-                </div>
-                
-                <div class="shader-preview-3d" id="shader-preview-3d">
-                    <div class="shader-scene">
-                        <div class="shader-sky"></div>
-                        <div class="shader-ground"></div>
-                        <div class="shader-sun"></div>
-                        <div class="shader-cube"></div>
-                        <div class="shader-water"></div>
+                <h2>Попередній перегляд та експорт шейдеру</h2>
+                <div class="preview-area" id="shader-preview">
+                    <div class="minecraft-preview">
+                        <div class="preview-sky"></div>
+                        <div class="preview-sun"></div>
+                        <div class="preview-ground"></div>
+                        <div class="preview-water"></div>
+                        <div class="preview-trees"></div>
                     </div>
                 </div>
-                
                 <div class="code-block" id="shader-code">
                     // Код шейдеру з'явиться тут після генерації
                 </div>
-                <button id="download-shader">Завантажити шейдер</button>
+                <button id="download-shader">Завантажити шейдер (.mcpack)</button>
             </div>
         </div>
         
@@ -467,40 +403,41 @@
                 <h2>Бібліотека готових шейдерів</h2>
                 <p>Оберіть готовий шейдер з нашої бібліотеки або завантажте власний</p>
                 
-                <div class="search-container">
-                    <input type="text" class="search-input" id="library-search" placeholder="Пошук шейдерів...">
-                    <button class="search-button" id="search-button">Пошук</button>
-                </div>
-                
                 <div class="shader-list">
                     <div class="shader-item" data-shader="water-waves">
+                        <div class="shader-preview" style="background: linear-gradient(to bottom, #1a237e, #2196f3);">
+                            <div style="position:absolute; bottom:0; width:100%; height:30%; background:rgba(33,150,243,0.7);"></div>
+                        </div>
                         <h3>Водяні хвилі</h3>
                         <p>Реалістичні водяні хвилі з відображенням</p>
                     </div>
                     <div class="shader-item" data-shader="dynamic-light">
+                        <div class="shader-preview" style="background: linear-gradient(to bottom, #ff9800, #ffeb3b);">
+                            <div style="position:absolute; top:20%; right:20%; width:30px; height:30px; background:#ffeb3b; border-radius:50%; box-shadow:0 0 30px #ffeb3b;"></div>
+                        </div>
                         <h3>Динамічне освітлення</h3>
                         <p>Покращене динамічне освітлення з мягкими тінями</p>
                     </div>
                     <div class="shader-item" data-shader="celestial">
+                        <div class="shader-preview" style="background: linear-gradient(to bottom, #0d47a1, #1a237e);">
+                            <div style="position:absolute; top:15%; left:20%; width:20px; height:20px; background:white; border-radius:50%; box-shadow:0 0 20px white;"></div>
+                            <div style="position:absolute; top:25%; left:60%; width:15px; height:15px; background:white; border-radius:50%;"></div>
+                        </div>
                         <h3>Небесні тіла</h3>
                         <p>Реалістичні сонце, місяць та зірки</p>
                     </div>
                     <div class="shader-item" data-shader="volumetric-clouds">
+                        <div class="shader-preview" style="background: linear-gradient(to bottom, #64b5f6, #bbdefb);">
+                            <div style="position:absolute; top:30%; left:10%; width:40px; height:20px; background:white; border-radius:10px; opacity:0.8;"></div>
+                            <div style="position:absolute; top:40%; left:50%; width:60px; height:25px; background:white; border-radius:12px; opacity:0.7;"></div>
+                        </div>
                         <h3>Об'ємні хмари</h3>
                         <p>3D хмари з реалістичним освітленням</p>
-                    </div>
-                    <div class="shader-item" data-shader="realistic-shadows">
-                        <h3>Реалістичні тіні</h3>
-                        <p>Тіні з мягкими краями та правильною динамікою</p>
-                    </div>
-                    <div class="shader-item" data-shader="ultra-realistic">
-                        <h3>Ультра-реалістичний</h3>
-                        <p>Фотографічний рівень деталізації</p>
                     </div>
                 </div>
                 
                 <div style="margin-top: 2rem;">
-                    <input type="file" id="upload-shader" class="file-input" accept=".zip,.json">
+                    <input type="file" id="upload-shader" class="file-input" accept=".mcpack,.zip">
                     <label for="upload-shader" class="file-label">Завантажити власний шейдер</label>
                 </div>
             </div>
@@ -508,19 +445,49 @@
         
         <div class="tab-content" id="inspiration">
             <div class="card">
-                <h2>Натхнення шейдерами</h2>
-                <p>Переглядайте популярні шейдери з інтернету для натхнення</p>
+                <h2>Вдохновлення шейдерами</h2>
+                <p>Перегляньте популярні шейдери з інтернету для натхнення</p>
                 
-                <div class="search-container">
-                    <input type="text" class="search-input" id="inspiration-search" placeholder="Пошук натхнення...">
-                    <button class="search-button" id="inspiration-search-button">Пошук</button>
+                <div class="inspiration-grid">
+                    <div class="inspiration-item">
+                        <div class="inspiration-img" style="background: linear-gradient(45deg, #1a237e, #4a148c);">
+                            SEUS Renewed
+                        </div>
+                        <div class="inspiration-content">
+                            <h3>SEUS Renewed</h3>
+                            <p>Один з найпопулярніших шейдерів з реалістичним освітленням</p>
+                        </div>
+                    </div>
+                    <div class="inspiration-item">
+                        <div class="inspiration-img" style="background: linear-gradient(45deg, #004d40, #00796b);">
+                            BSL Shaders
+                        </div>
+                        <div class="inspiration-content">
+                            <h3>BSL Shaders</h3>
+                            <p>Відмінний баланс між продуктивністю та якістю графіки</p>
+                        </div>
+                    </div>
+                    <div class="inspiration-item">
+                        <div class="inspiration-img" style="background: linear-gradient(45deg, #311b92, #512da8);">
+                            Sildur's Vibrant
+                        </div>
+                        <div class="inspiration-content">
+                            <h3>Sildur's Vibrant</h3>
+                            <p>Яскраві кольори та ефекти освітлення</p>
+                        </div>
+                    </div>
+                    <div class="inspiration-item">
+                        <div class="inspiration-img" style="background: linear-gradient(45deg, #1b5e20, #388e3c);">
+                            Chocapic13's Shaders
+                        </div>
+                        <div class="inspiration-content">
+                            <h3>Chocapic13's Shaders</h3>
+                            <p>Високоякісні шейдери з різними рівнями продуктивності</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="inspiration-gallery" id="inspiration-gallery">
-                    <!-- Шейдери будуть додані через JavaScript -->
-                </div>
-                
-                <div style="text-align: center; margin-top: 2rem;">
+                <div style="margin-top: 2rem; text-align: center;">
                     <button id="load-more">Завантажити більше</button>
                 </div>
             </div>
@@ -540,10 +507,11 @@
                     </ul>
                     
                     <h3>Крок 2: Завантажте шейдер</h3>
-                    <p>Згенеруйте або оберіть шейдер з бібліотеки та завантажте його</p>
+                    <p>Згенеруйте або оберіть шейдер з бібліотеки та завантажте його у форматі .mcpack</p>
                     
-                    <h3>Крок 3: Перемістіть файл шейдеру</h3>
-                    <p>Перемістіть завантажений файл шейдеру (.zip) у папку shaderpacks у директорії Minecraft</p>
+                    <h3>Крок 3: Встановіть шейдер в Minecraft</h3>
+                    <p>Для Minecraft Bedrock Edition: Відкрийте файл .mcpack - він автоматично імпортується в гру</p>
+                    <p>Для Minecraft Java Edition: Перемістіть файл .zip у папку shaderpacks у директорії Minecraft</p>
                     
                     <h3>Крок 4: Активуйте шейдер в грі</h3>
                     <p>У налаштуваннях відео оберіть вкладку Shaders та активуйте ваш шейдер</p>
@@ -559,7 +527,7 @@
     </div>
     
     <footer>
-        <p>Генератор Шейдерів для Minecraft з переглядом та натхненням &copy; 2023</p>
+        <p>Генератор Шейдерів для Minecraft &copy; 2023</p>
     </footer>
 
     <script>
@@ -573,11 +541,6 @@
                 // Add active class to clicked tab and corresponding content
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.tab).classList.add('active');
-                
-                // If inspiration tab is opened, load inspiration gallery
-                if (tab.dataset.tab === 'inspiration') {
-                    loadInspirationGallery();
-                }
             });
         });
         
@@ -599,8 +562,8 @@
             const color = document.getElementById('shader-color').value;
             const description = document.getElementById('shader-description').value;
             
-            // Update 3D preview based on shader type
-            update3DPreview(type, intensity, color);
+            // Update preview based on shader type
+            updatePreview(type, intensity, color);
             
             // Generate shader code
             const shaderCode = generateShaderCode(name, type, intensity, color);
@@ -610,184 +573,210 @@
             document.getElementById('download-shader').disabled = false;
         }
         
-        function update3DPreview(type, intensity, color) {
-            const scene = document.querySelector('.shader-scene');
-            const sun = document.querySelector('.shader-sun');
-            const sky = document.querySelector('.shader-sky');
-            const water = document.querySelector('.shader-water');
-            const cube = document.querySelector('.shader-cube');
+        function updatePreview(type, intensity, color) {
+            const preview = document.querySelector('.minecraft-preview');
+            let html = '<div class="preview-sky"></div><div class="preview-ground"></div>';
             
-            // Reset all elements
-            scene.style.filter = 'none';
-            sun.style.opacity = '1';
-            sky.style.background = 'linear-gradient(to bottom, #87CEEB, #E0F7FA)';
-            water.style.display = 'block';
-            cube.style.display = 'block';
-            
-            // Apply effects based on shader type and intensity
+            // Apply effects based on shader type
             switch(type) {
                 case 'water':
-                    water.style.background = `linear-gradient(to bottom, transparent, ${color}70)`;
-                    water.style.height = `${10 + parseInt(intensity) * 2}%`;
+                    html += '<div class="preview-water" style="background: rgba(33, 150, 243, ' + (0.3 + intensity * 0.05) + ');"></div>';
+                    html += '<div class="preview-trees"></div>';
+                    html += '<div class="preview-sun"></div>';
                     break;
                 case 'lighting':
-                    const brightness = 0.5 + (intensity * 0.05);
-                    scene.style.filter = `brightness(${brightness})`;
-                    sun.style.boxShadow = `0 0 ${20 + intensity * 3}px #FFEB3B`;
+                    html += '<div class="preview-sun" style="box-shadow: 0 0 ' + (30 + intensity * 5) + 'px #ffeb3b;"></div>';
+                    html += '<div class="preview-trees"></div>';
                     break;
                 case 'shadow':
-                    const shadowIntensity = 0.1 + (intensity * 0.05);
-                    cube.style.boxShadow = `-10px 10px ${5 + intensity * 2}px rgba(0,0,0,${shadowIntensity})`;
+                    html += '<div class="preview-sun"></div>';
+                    html += '<div class="preview-trees" style="filter: brightness(' + (0.7 + intensity * 0.03) + ');"></div>';
                     break;
                 case 'atmosphere':
                     const r = parseInt(color.substr(1,2), 16);
                     const g = parseInt(color.substr(3,2), 16);
                     const b = parseInt(color.substr(5,2), 16);
-                    sky.style.background = `linear-gradient(to bottom, rgba(${r},${g},${b},0.8), #E0F7FA)`;
-                    break;
-            }
-        }
-        
-        // Preview controls
-        document.getElementById('preview-day').addEventListener('click', () => {
-            const sky = document.querySelector('.shader-sky');
-            const sun = document.querySelector('.shader-sun');
-            sky.style.background = 'linear-gradient(to bottom, #87CEEB, #E0F7FA)';
-            sun.style.opacity = '1';
-        });
-        
-        document.getElementById('preview-night').addEventListener('click', () => {
-            const sky = document.querySelector('.shader-sky');
-            const sun = document.querySelector('.shader-sun');
-            sky.style.background = 'linear-gradient(to bottom, #0f1a30, #1a1a2e)';
-            sun.style.opacity = '0';
-        });
-        
-        document.getElementById('preview-rain').addEventListener('click', () => {
-            const sky = document.querySelector('.shader-sky');
-            sky.style.background = 'linear-gradient(to bottom, #4a5568, #718096)';
-        });
-        
-        function generateShaderCode(name, type, intensity, color) {
-            // This is a simplified example - real shader code would be more complex
-            let code = `// Шейдер: ${name}
-// Тип: ${type}
-// Інтенсивність: ${intensity}
-// Колір: ${color}
-
-#ifdef FRAGMENT
-
-uniform sampler2D DiffuseSampler;
-uniform vec2 OutSize;
-
-varying vec2 texCoord;
-
-void main() {
-    vec4 color = texture2D(DiffuseSampler, texCoord);
-    
-    // Apply effects based on type and intensity
-    `;
-            
-            switch(type) {
-                case 'water':
-                    code += `
-    // Water effects
-    float waveIntensity = ${intensity} * 0.1;
-    vec2 waveCoord = texCoord + vec2(sin(texCoord.y * 20.0) * waveIntensity, 0.0);
-    color = texture2D(DiffuseSampler, waveCoord);
-    
-    // Add water color tint
-    vec3 waterColor = vec3(0.0, 0.5, 1.0);
-    color.rgb = mix(color.rgb, waterColor, 0.3);
-    `;
-                    break;
-                case 'lighting':
-                    code += `
-    // Lighting effects
-    float brightness = ${intensity} * 0.15;
-    color.rgb += brightness;
-    
-    // Enhance contrast
-    color.rgb = (color.rgb - 0.5) * (1.0 + ${intensity} * 0.05) + 0.5;
-    `;
-                    break;
-                case 'shadow':
-                    code += `
-    // Shadow effects
-    float shadowIntensity = ${intensity} * 0.08;
-    vec3 shadowColor = vec3(0.0, 0.0, 0.0);
-    
-    // Sample surrounding pixels for shadow calculation
-    vec2 pixelSize = 1.0 / OutSize;
-    float depth = 0.0;
-    for(int x = -1; x <= 1; x++) {
-        for(int y = -1; y <= 1; y++) {
-            vec2 offset = vec2(x, y) * pixelSize;
-            depth += texture2D(DiffuseSampler, texCoord + offset).r;
-        }
-    }
-    depth /= 9.0;
-    
-    // Apply shadow based on depth
-    color.rgb = mix(color.rgb, shadowColor, (1.0 - depth) * shadowIntensity);
-    `;
-                    break;
-                case 'atmosphere':
-                    code += `
-    // Atmospheric effects
-    vec3 atmosphereColor = vec3(0.7, 0.8, 1.0);
-    float atmosphereIntensity = ${intensity} * 0.1;
-    
-    // Apply atmospheric fog
-    float fogFactor = 1.0 - exp(-texCoord.y * atmosphereIntensity);
-    color.rgb = mix(color.rgb, atmosphereColor, fogFactor);
-    `;
+                    html = '<div class="preview-sky" style="background: linear-gradient(to bottom, rgba(' + r + ',' + g + ',' + b + ',0.8), #b0e2ff);"></div>' + 
+                           '<div class="preview-ground"></div>' +
+                           '<div class="preview-sun"></div>' +
+                           '<div class="preview-trees"></div>';
                     break;
                 default:
-                    code += `
-    // Custom effects
-    float effectStrength = ${intensity} * 0.1;
-    
-    // Color adjustment
-    vec3 targetColor = vec3(${parseInt(color.substr(1,2), 16)/255.0}, 
-                           ${parseInt(color.substr(3,2), 16)/255.0}, 
-                           ${parseInt(color.substr(5,2), 16)/255.0});
-    color.rgb = mix(color.rgb, targetColor, effectStrength * 0.5);
-    `;
+                    html += '<div class="preview-sun"></div>';
+                    html += '<div class="preview-trees"></div>';
             }
             
-            code += `
-    gl_FragColor = color;
-}
-
-#endif
-            `;
-            
-            return code;
+            preview.innerHTML = html;
         }
         
-        // Download shader
+        function generateShaderCode(name, type, intensity, color) {
+            // Generate proper shader code for Minecraft
+            const shaderData = {
+                "format_version": "1.8.0",
+                "minecraft:shader": {
+                    "version": "1.0.0",
+                    "name": name,
+                    "settings": {
+                        "type": type,
+                        "intensity": parseInt(intensity),
+                        "color": color,
+                        "description": document.getElementById('shader-description').value || "Custom Minecraft shader"
+                    },
+                    "defines": {},
+                    "uniforms": {},
+                    "varying": {},
+                    "vertex_shader": [
+                        "void main() {",
+                        "  gl_Position = u_ModelViewProjectionMatrix * a_Vertex;",
+                        "  v_UV = a_UV;",
+                        "}"
+                    ].join("\n"),
+                    "fragment_shader": generateFragmentShader(type, intensity, color)
+                }
+            };
+            
+            return JSON.stringify(shaderData, null, 2);
+        }
+        
+        function generateFragmentShader(type, intensity, color) {
+            let shader = [
+                "uniform sampler2D u_Texture;",
+                "varying vec2 v_UV;",
+                "",
+                "void main() {",
+                "  vec4 color = texture2D(u_Texture, v_UV);",
+                ""
+            ].join("\n");
+            
+            // Add effects based on shader type
+            switch(type) {
+                case 'water':
+                    shader += [
+                        "  // Water effects",
+                        "  float waveIntensity = " + (intensity * 0.1) + ";",
+                        "  vec2 waveCoord = v_UV + vec2(sin(v_UV.y * 20.0) * waveIntensity, 0.0);",
+                        "  color = texture2D(u_Texture, waveCoord);",
+                        "",
+                        "  // Add water color tint",
+                        "  vec3 waterColor = vec3(0.0, 0.5, 1.0);",
+                        "  color.rgb = mix(color.rgb, waterColor, 0.3);"
+                    ].join("\n");
+                    break;
+                case 'lighting':
+                    shader += [
+                        "  // Lighting effects",
+                        "  float brightness = " + (intensity * 0.15) + ";",
+                        "  color.rgb += brightness;",
+                        "",
+                        "  // Enhance contrast",
+                        "  color.rgb = (color.rgb - 0.5) * (1.0 + " + (intensity * 0.05) + ") + 0.5;"
+                    ].join("\n");
+                    break;
+                case 'shadow':
+                    shader += [
+                        "  // Shadow effects",
+                        "  float shadowIntensity = " + (intensity * 0.08) + ";",
+                        "  vec3 shadowColor = vec3(0.0, 0.0, 0.0);",
+                        "",
+                        "  // Sample surrounding pixels for shadow calculation",
+                        "  vec2 pixelSize = 1.0 / u_TextureSize;",
+                        "  float depth = 0.0;",
+                        "  for(int x = -1; x <= 1; x++) {",
+                        "    for(int y = -1; y <= 1; y++) {",
+                        "      vec2 offset = vec2(x, y) * pixelSize;",
+                        "      depth += texture2D(u_Texture, v_UV + offset).r;",
+                        "    }",
+                        "  }",
+                        "  depth /= 9.0;",
+                        "",
+                        "  // Apply shadow based on depth",
+                        "  color.rgb = mix(color.rgb, shadowColor, (1.0 - depth) * shadowIntensity);"
+                    ].join("\n");
+                    break;
+                case 'atmosphere':
+                    const r = parseInt(color.substr(1,2), 16) / 255;
+                    const g = parseInt(color.substr(3,2), 16) / 255;
+                    const b = parseInt(color.substr(5,2), 16) / 255;
+                    shader += [
+                        "  // Atmospheric effects",
+                        "  vec3 atmosphereColor = vec3(" + r + ", " + g + ", " + b + ");",
+                        "  float atmosphereIntensity = " + (intensity * 0.1) + ";",
+                        "",
+                        "  // Apply atmospheric fog",
+                        "  float fogFactor = 1.0 - exp(-v_UV.y * atmosphereIntensity);",
+                        "  color.rgb = mix(color.rgb, atmosphereColor, fogFactor);"
+                    ].join("\n");
+                    break;
+                default:
+                    shader += [
+                        "  // Custom effects",
+                        "  float effectStrength = " + (intensity * 0.1) + ";",
+                        "",
+                        "  // Color adjustment",
+                        "  vec3 targetColor = vec3(" + (parseInt(color.substr(1,2), 16)/255.0) + ", " + 
+                                             (parseInt(color.substr(3,2), 16)/255.0) + ", " + 
+                                             (parseInt(color.substr(5,2), 16)/255.0) + ");",
+                        "  color.rgb = mix(color.rgb, targetColor, effectStrength * 0.5);"
+                    ].join("\n");
+            }
+            
+            shader += [
+                "",
+                "  gl_FragColor = color;",
+                "}"
+            ].join("\n");
+            
+            return shader;
+        }
+        
+        // Download shader as .mcpack
         document.getElementById('download-shader').addEventListener('click', () => {
             const shaderName = document.getElementById('shader-name').value || 'my_shader';
             const shaderCode = document.getElementById('shader-code').textContent;
             
-            // Create a blob with the shader code
-            const blob = new Blob([shaderCode], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
+            // Create manifest for .mcpack
+            const manifest = {
+                "format_version": 2,
+                "header": {
+                    "name": shaderName,
+                    "description": document.getElementById('shader-description').value || "Custom Minecraft shader",
+                    "uuid": generateUUID(),
+                    "version": [1, 0, 0],
+                    "min_engine_version": [1, 16, 0]
+                },
+                "modules": [
+                    {
+                        "type": "resources",
+                        "uuid": generateUUID(),
+                        "version": [1, 0, 0]
+                    }
+                ]
+            };
             
-            // Create a temporary link to trigger download
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${shaderName}.txt`;
-            document.body.appendChild(a);
-            a.click();
+            // Create a zip file with the shader data
+            const zip = new JSZip();
+            zip.file("manifest.json", JSON.stringify(manifest, null, 2));
+            zip.file("shaders/" + shaderName + ".json", shaderCode);
             
-            // Clean up
-            setTimeout(() => {
+            // Generate and download the .mcpack file
+            zip.generateAsync({type:"blob"}).then(function(content) {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(content);
+                a.download = shaderName + '.mcpack';
+                document.body.appendChild(a);
+                a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 100);
+            });
         });
+        
+        // Generate UUID for manifest
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
         
         // Library shader selection
         document.querySelectorAll('.shader-item').forEach(item => {
@@ -836,20 +825,6 @@ void main() {
                     color = '#E3F2FD';
                     description = '3D хмари з реалістичним освітленням та тінями';
                     break;
-                case 'realistic-shadows':
-                    name = 'Реалістичні тіні';
-                    type = 'shadow';
-                    intensity = '7';
-                    color = '#424242';
-                    description = 'Тіні з мягкими краями та правильною динамікою';
-                    break;
-                case 'ultra-realistic':
-                    name = 'Ультра-реалістичний';
-                    type = 'custom';
-                    intensity = '10';
-                    color = '#FFFFFF';
-                    description = 'Фотографічний рівень деталізації з усіма типами ефектів';
-                    break;
             }
             
             // Set form values
@@ -878,7 +853,8 @@ void main() {
                     newShader.className = 'shader-item';
                     newShader.dataset.shader = 'custom';
                     newShader.innerHTML = `
-                        <h3>${fileName.replace('.zip', '').replace('.json', '')}</h3>
+                        <div class="shader-preview" style="background: linear-gradient(45deg, #9c27b0, #e91e63);"></div>
+                        <h3>${fileName.replace('.mcpack', '').replace('.zip', '')}</h3>
                         <p>Ваш власний шейдер</p>
                     `;
                     shaderList.appendChild(newShader);
@@ -891,6 +867,51 @@ void main() {
             }
         });
         
+        // Load more inspiration
+        document.getElementById('load-more').addEventListener('click', () => {
+            const grid = document.querySelector('.inspiration-grid');
+            const newItems = [
+                {
+                    name: "Continuum Shaders",
+                    desc: "Найреалістичніші шейдери для Minecraft",
+                    color: "linear-gradient(45deg, #ff6f00, #ff9800)"
+                },
+                {
+                    name: "KUDA Shaders",
+                    desc: "Легкі та продуктивні шейдери",
+                    color: "linear-gradient(45deg, #00695c, #004d40)"
+                },
+                {
+                    name: "ProjectLuma",
+                    desc: "Шейдери з акцентом на освітлення",
+                    color: "linear-gradient(45deg, #283593, #3949ab)"
+                },
+                {
+                    name: "Nostalgia Shader",
+                    desc: "Вінтажний вигляд з сучасними ефектами",
+                    color: "linear-gradient(45deg, #795548, #5d4037)"
+                }
+            ];
+            
+            newItems.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'inspiration-item';
+                newItem.innerHTML = `
+                    <div class="inspiration-img" style="background: ${item.color};">
+                        ${item.name}
+                    </div>
+                    <div class="inspiration-content">
+                        <h3>${item.name}</h3>
+                        <p>${item.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(newItem);
+            });
+            
+            // Hide button after loading all items
+            document.getElementById('load-more').style.display = 'none';
+        });
+        
         // Simulate import
         document.getElementById('simulate-import').addEventListener('click', () => {
             const successMessage = document.getElementById('import-success');
@@ -901,146 +922,16 @@ void main() {
             }, 5000);
         });
         
-        // Inspiration gallery
-        function loadInspirationGallery() {
-            const gallery = document.getElementById('inspiration-gallery');
-            
-            // Clear existing content
-            gallery.innerHTML = '';
-            
-            // Sample inspiration data - in a real app, this would come from an API
-            const inspirationData = [
-                {
-                    id: 1,
-                    name: "SEUS Renewed",
-                    description: "Один з найпопулярніших шейдерів з реалістичним освітленням",
-                    image: "seus",
-                    author: "sonicether",
-                    downloads: "2.5M"
-                },
-                {
-                    id: 2,
-                    name: "BSL Shaders",
-                    description: "Відмінний баланс між продуктивністю та якістю графіки",
-                    image: "bsl",
-                    author: "capttatsu",
-                    downloads: "1.8M"
-                },
-                {
-                    id: 3,
-                    name: "Chocapic13's Shaders",
-                    description: "Легкий шейдер з гарною продуктивністю",
-                    image: "chocapic",
-                    author: "chocapic13",
-                    downloads: "1.2M"
-                },
-                {
-                    id: 4,
-                    name: "Sildur's Vibrant Shaders",
-                    description: "Яскраві кольори та гарні ефекти освітлення",
-                    image: "sildur",
-                    author: "sildur",
-                    downloads: "2.1M"
-                },
-                {
-                    id: 5,
-                    name: "Continuum Shaders",
-                    description: "Професійний шейдер для ютуберів та стрімерів",
-                    image: "continuum",
-                    author: "continuum",
-                    downloads: "800K"
-                },
-                {
-                    id: 6,
-                    name: "Kappa Shaders",
-                    description: "Реалістичні ефекти води та атмосфери",
-                    image: "kappa",
-                    author: "kappa",
-                    downloads: "600K"
-                }
-            ];
-            
-            // Create inspiration items
-            inspirationData.forEach(item => {
-                const inspirationItem = document.createElement('div');
-                inspirationItem.className = 'inspiration-item';
-                inspirationItem.innerHTML = `
-                    <div class="inspiration-image" style="background: linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})"></div>
-                    <div class="inspiration-content">
-                        <h3>${item.name}</h3>
-                        <p>${item.description}</p>
-                        <div class="inspiration-details">
-                            <p><strong>Автор:</strong> ${item.author}</p>
-                            <p><strong>Завантажень:</strong> ${item.downloads}</p>
-                        </div>
-                        <div class="inspiration-actions">
-                            <button class="inspiration-button view-shader">Переглянути</button>
-                            <button class="inspiration-button use-as-template">Використати як шаблон</button>
-                        </div>
-                    </div>
-                `;
-                
-                gallery.appendChild(inspirationItem);
-            });
-            
-            // Add event listeners to inspiration buttons
-            document.querySelectorAll('.view-shader').forEach(button => {
-                button.addEventListener('click', function() {
-                    const shaderName = this.closest('.inspiration-content').querySelector('h3').textContent;
-                    alert(`Перегляд деталей шейдера: ${shaderName}`);
-                });
-            });
-            
-            document.querySelectorAll('.use-as-template').forEach(button => {
-                button.addEventListener('click', function() {
-                    const shaderName = this.closest('.inspiration-content').querySelector('h3').textContent;
-                    alert(`Шейдер "${shaderName}" буде використано як шаблон для створення нового шейдера`);
-                    
-                    // Switch to generator tab
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    document.querySelector('.tab[data-tab="generator"]').classList.add('active');
-                    document.getElementById('generator').classList.add('active');
-                    
-                    // Set shader name
-                    document.getElementById('shader-name').value = `На основі: ${shaderName}`;
-                });
-            });
-        }
-        
-        // Load more inspiration
-        document.getElementById('load-more').addEventListener('click', loadInspirationGallery);
-        
-        // Search functionality
-        document.getElementById('search-button').addEventListener('click', searchLibrary);
-        document.getElementById('library-search').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') {
-                searchLibrary();
-            }
-        });
-        
-        function searchLibrary() {
-            const searchTerm = document.getElementById('library-search').value.toLowerCase();
-            const shaderItems = document.querySelectorAll('.shader-item');
-            
-            shaderItems.forEach(item => {
-                const name = item.querySelector('h3').textContent.toLowerCase();
-                const description = item.querySelector('p').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || description.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-        
         // Initialize with a default shader
         window.onload = function() {
-            loadShaderFromLibrary('water-waves');
-            loadInspirationGallery();
+            // Load JSZip library for .mcpack generation
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            document.head.appendChild(script);
+            
+            // Generate default shader
+            generateShader();
         };
     </script>
 </body>
-</html>
+    </html>
